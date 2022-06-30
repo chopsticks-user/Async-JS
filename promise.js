@@ -26,11 +26,25 @@ const getPosts = () => {
     }, 1000);
 };
 
-const createPosts = (post, callback) => {
-    setTimeout(() => {
-        posts.push(post); // load in 2s
-        callback(); // load in 1s but wait for posts.push() to finish => 3s in total
-    }, 2000);
+const createPosts = (post) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            posts.push(post); // load in 2s
+            const error = false;
+            if(!error) {
+                resolve();
+            } else {
+                reject("Error: Something went wrong");
+            }
+        }, 2000);
+    });
 };
 
-createPosts({"name": "orochi", "age": 2, "weight": 2.4}, getPosts);
+createPosts({"name": "orochi", "age": 2, "weight": 2.4}).then(getPosts).catch(err => console.log(err));
+
+const promise1 = Promise.resolve("Resolved");
+const promise2 = 100;
+const promise3 = new Promise((resolve, reject) => setTimeout(resolve, 2000, "Goob Bye"));
+const promise4 = fetch("https://jsonplaceholder.typicode.com/users").then(res => res.json());
+
+Promise.all([promise1, promise2, promise3, promise4]).then((values => console.log(values)));
